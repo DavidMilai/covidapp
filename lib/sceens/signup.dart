@@ -1,9 +1,10 @@
-import 'package:covidapp/sceens/home_screen.dart';
 import 'package:covidapp/services/auth.dart';
 import 'package:covidapp/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import 'login_screen.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -195,7 +196,7 @@ class _SignUpState extends State<SignUp> {
                                 .then((value) => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => HomeScreen())));
+                                        builder: (context) => LoginScreen())));
                             setState(() {
                               isLoading = true;
                             });

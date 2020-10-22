@@ -1,7 +1,3 @@
-import 'dart:wasm';
-
-import 'package:covidapp/sceens/login_screen.dart';
-import 'package:covidapp/sceens/signup.dart';
 import 'package:covidapp/sceens/symptoms_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:covidapp/widgets/detail_card.dart';
