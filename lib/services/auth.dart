@@ -9,8 +9,7 @@ class AuthService {
     try {
       var result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser user = result.user;
-      return user;
+      return result;
     } catch (e) {
       Fluttertoast.showToast(
           msg: "Incorrect Email or Password",
@@ -28,6 +27,7 @@ class AuthService {
     try {
       var result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      return result;
     } catch (e) {
       Fluttertoast.showToast(
           msg: 'Use another email',
@@ -37,6 +37,7 @@ class AuthService {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
+      return null;
     }
   }
 }

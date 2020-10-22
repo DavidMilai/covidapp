@@ -1,9 +1,8 @@
+import 'package:covidapp/sceens/home_screen.dart';
 import 'package:covidapp/services/auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:covidapp/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class SignUp extends StatefulWidget {
@@ -14,9 +13,8 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool isLoading = false;
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   String email, password, firstName, lastName;
+  var phoneNumber;
   final AuthService authentication = AuthService();
 
   String pwdValidator(String value) {
@@ -30,6 +28,14 @@ class _SignUpState extends State<SignUp> {
   String nameValidator(String value) {
     if (value.length < 2) {
       return 'Enter Your name';
+    } else {
+      return null;
+    }
+  }
+
+  String phoneValidator(String value) {
+    if (value.length < 10) {
+      return 'Enter a valid phone number';
     } else {
       return null;
     }
@@ -124,8 +130,10 @@ class _SignUpState extends State<SignUp> {
                           size: 30,
                         ),
                         labelText: 'Phone number'),
-                    onChanged: (value) {},
-                    //validator: emailValidator,
+                    onChanged: (value) {
+                      phoneNumber = value;
+                    },
+                    validator: phoneValidator,
                     keyboardType: TextInputType.phone,
                   ),
                   SizedBox(height: 15),
@@ -169,8 +177,30 @@ class _SignUpState extends State<SignUp> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      onPressed: () {
-                        authentication.register(email, password);
+                      onPressed: () async {
+                        if (loginFormKey.currentState.validate()) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          var test =
+                              await authentication.register(email, password);
+                          if (test == null) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          } else {
+                            await DatabaseService(userEmail: email)
+                                .setUserData(
+                                    email, firstName, lastName, phoneNumber)
+                                .then((value) => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomeScreen())));
+                            setState(() {
+                              isLoading = true;
+                            });
+                          }
+                        }
                       }),
                 ],
               ),

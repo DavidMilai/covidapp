@@ -1,7 +1,10 @@
 import 'package:covidapp/sceens/signup.dart';
+import 'package:covidapp/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   String email, password;
+  final AuthService authentication = AuthService();
 
   String pwdValidator(String value) {
     if (value.length < 6) {
@@ -122,7 +126,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          onPressed: () async {}),
+                          onPressed: () async {
+                            if (loginFormKey.currentState.validate()) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              dynamic result =
+                                  await authentication.signIn(email, password);
+                              if (result == null) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              } else {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(),
+                                  ),
+                                );
+                              }
+                            }
+                          }),
                     ],
                   ),
                 ),

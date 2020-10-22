@@ -73,24 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 5),
             ListTile(
-              leading: Icon(Icons.supervised_user_circle),
-              title: Text('Sign Up'),
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => SignUp()));
-              },
-            ),
-            SizedBox(height: 5),
-            ListTile(
-              leading: Icon(Icons.supervised_user_circle),
-              title: Text('Login'),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
-              },
-            ),
-            SizedBox(height: 5),
-            ListTile(
               leading: Icon(Icons.local_hospital),
               title: Text('Treatment Centers'),
               onTap: () {},
@@ -104,7 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Spacer(),
             MaterialButton(
               color: Colors.amber,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.popAndPushNamed(context, 'login');
+              },
               child: Text(
                 'Log out',
                 style: TextStyle(letterSpacing: 1, color: Colors.white),
