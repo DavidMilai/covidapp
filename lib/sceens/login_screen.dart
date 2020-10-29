@@ -1,3 +1,4 @@
+import 'package:covidapp/sceens/reset_password_screen.dart';
 import 'package:covidapp/sceens/signup.dart';
 import 'package:covidapp/services/auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool isLoading = false;
+  bool isLoading = false, obscurePassword = true;
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   String email, password;
   final AuthService authentication = AuthService();
@@ -26,15 +27,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   String emailValidator(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Email format is invalid';
-    } else if (regex == null) {
+    if (value == null) {
       return 'Please enter an email address';
     } else {
-      return null;
+      Pattern pattern =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      RegExp regex = new RegExp(pattern);
+      if (!regex.hasMatch(value)) {
+        return 'Enter a valid email';
+      } else {
+        return null;
+      }
     }
   }
 
@@ -53,107 +56,132 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Form(
           key: loginFormKey,
           child: SafeArea(
-            child: Stack(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10),
-                  child: ListView(
-                    children: [
-                      Align(
-                        alignment: Alignment(0.9, 0),
+            child: Padding(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    SizedBox(height: size.height * 0.16),
+                    Center(
+                      child: Text(
+                        'Log in',
+                        style: TextStyle(
+                            fontSize: 40, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      decoration: InputDecoration(
+                          suffixIcon: Icon(
+                            Icons.email,
+                            size: 20,
+                          ),
+                          labelText: 'Email'),
+                      onChanged: (value) {
+                        email = value;
+                      },
+                      validator: emailValidator,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      decoration: InputDecoration(
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                obscurePassword = !obscurePassword;
+                              });
+                            },
+                            child: Icon(
+                              obscurePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              size: 20.0,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          labelText: 'Password'),
+                      validator: pwdValidator,
+                      onChanged: (value) {
+                        password = value;
+                      },
+                      obscureText: obscurePassword,
+                    ),
+                    SizedBox(height: 20),
+                    Align(
+                        alignment: Alignment.topLeft,
                         child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ResetPasswordScreen()));
+                            },
+                            child: Text('Forgot Password?'))),
+                    SizedBox(height: 20),
+                    MaterialButton(
+                        color: Colors.amber,
+                        minWidth: 250,
+                        elevation: 10,
+                        height: size.width / 10,
+                        child: Text(
+                          'Log in',
+                          style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontSize: 18),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        onPressed: () async {
+                          if (loginFormKey.currentState.validate()) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            dynamic result =
+                                await authentication.signIn(email, password);
+                            if (result == null) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            } else {
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(),
+                                ),
+                              );
+                            }
+                          }
+                        }),
+                    SizedBox(height: 25),
+                    Row(
+                      children: [
+                        Text('Don\'t have an account yet?',
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 15)),
+                        GestureDetector(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SignUp()));
                           },
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold),
-                          ),
+                          child: Text(' Sign Up',
+                              style:
+                                  TextStyle(color: Colors.amber, fontSize: 15)),
                         ),
-                      ),
-                      SizedBox(height: size.width / 7),
-                      Center(
-                        child: Text(
-                          'Log in',
-                          style: TextStyle(
-                              fontSize: 40, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(height: size.width / 5),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.email,
-                              size: 30,
-                            ),
-                            labelText: 'Email'),
-                        onChanged: (value) {
-                          email = value;
-                        },
-                        validator: emailValidator,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.lock, size: 30),
-                            labelText: 'Password'),
-                        validator: pwdValidator,
-                        onChanged: (value) {
-                          password = value;
-                        },
-                        obscureText: true,
-                      ),
-                      SizedBox(height: 25),
-                      MaterialButton(
-                          color: Colors.amber,
-                          minWidth: 250,
-                          elevation: 10,
-                          height: size.width / 10,
-                          child: Text(
-                            'Log in',
-                            style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 1,
-                                fontSize: 18),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          onPressed: () async {
-                            if (loginFormKey.currentState.validate()) {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              dynamic result =
-                                  await authentication.signIn(email, password);
-                              if (result == null) {
-                                setState(() {
-                                  isLoading = false;
-                                });
-                              } else {
-                                setState(() {
-                                  isLoading = false;
-                                });
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomeScreen(),
-                                  ),
-                                );
-                              }
-                            }
-                          }),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
