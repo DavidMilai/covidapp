@@ -1,3 +1,4 @@
+import 'package:covidapp/sceens/verify_email_screen.dart';
 import 'package:covidapp/services/auth.dart';
 import 'package:covidapp/services/database_service.dart';
 import 'package:flutter/material.dart';
@@ -193,10 +194,11 @@ class _SignUpState extends State<SignUp> {
                             await DatabaseService(userEmail: email)
                                 .setUserData(
                                     email, firstName, lastName, phoneNumber)
-                                .then((value) => Navigator.push(
+                                .then((value) => Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => LoginScreen())));
+                                        builder: (context) =>
+                                            VerifyEmailScreen())));
                             setState(() {
                               isLoading = true;
                             });
