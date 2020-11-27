@@ -27,8 +27,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     if (!user.emailVerified) {
       await user.sendEmailVerification();
     } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Future.delayed(Duration.zero, () {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      });
     }
   }
 

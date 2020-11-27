@@ -1,4 +1,6 @@
+import 'package:covidapp/sceens/history_screen.dart';
 import 'package:covidapp/sceens/symptoms_screen.dart';
+import 'package:covidapp/sceens/treatment_centers_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:covidapp/widgets/detail_card.dart';
 import 'package:http/http.dart' as http;
@@ -69,15 +71,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 5),
             ListTile(
-              leading: Icon(Icons.local_hospital),
-              title: Text('Treatment Centers'),
-              onTap: () {},
+              leading: Icon(Icons.history),
+              title: Text('History'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HistoryScreen()));
+              },
             ),
             SizedBox(height: 5),
             ListTile(
-              leading: Icon(Icons.location_city),
-              title: Text('Hotspot areas'),
-              onTap: () {},
+              leading: Icon(Icons.local_hospital),
+              title: Text('Treatment Centers'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TreatmentCentersScreen()));
+              },
             ),
             Spacer(),
             MaterialButton(
