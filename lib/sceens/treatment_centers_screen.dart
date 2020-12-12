@@ -47,15 +47,10 @@ class _TreatmentCentersScreenState extends State<TreatmentCentersScreen> {
                             itemCount: snapshot.data.docs.length,
                             itemBuilder: (context, index) {
                               var doc = snapshot.data.docs[index].data();
-                              return ListTile(
-                                leading: Icon(
-                                  Icons.local_hospital,
-                                  color: Colors.red,
-                                  size: 40,
-                                ),
-                                title: Text(doc['name']),
-                                trailing: IconButton(
-                                  onPressed: () {
+                              return Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -67,7 +62,30 @@ class _TreatmentCentersScreenState extends State<TreatmentCentersScreen> {
                                       ),
                                     );
                                   },
-                                  icon: Icon(Icons.arrow_forward_ios),
+                                  child: ListTile(
+                                    leading: Icon(
+                                      Icons.local_hospital,
+                                      color: Colors.red,
+                                      size: 40,
+                                    ),
+                                    title: Text(doc['name']),
+                                    trailing: IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                LocationScreen(
+                                              hospital: doc['name'],
+                                              latitude: doc['latitude'],
+                                              longitude: doc['longitude'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      icon: Icon(Icons.arrow_forward_ios),
+                                    ),
+                                  ),
                                 ),
                               );
                             });

@@ -2,6 +2,7 @@ import 'package:covidapp/sceens/reset_password_screen.dart';
 import 'package:covidapp/sceens/signup.dart';
 import 'package:covidapp/sceens/verify_email_screen.dart';
 import 'package:covidapp/services/auth.dart';
+import 'package:covidapp/services/database_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';

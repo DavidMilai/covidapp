@@ -9,6 +9,8 @@ class DatabaseService {
   final String formatted = formatter.format(now);
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
+  final CollectionReference hospitals =
+      FirebaseFirestore.instance.collection('hospitals');
   Future setUserData(
       String email, String firstName, String lastName, var phoneNumber) async {
     return await userCollection.doc(userEmail).collection('details').doc().set({
@@ -16,6 +18,14 @@ class DatabaseService {
       "First Name": firstName,
       "Last Name": lastName,
       "Phone Number": phoneNumber,
+    });
+  }
+
+  Future setHospitals() async {
+    return await hospitals.doc().set({
+      "name": 'Mbagathi Infectious Diseases Hospital',
+      "longitude": '-1.3089683520723256',
+      "latitude": ' 36.80342399999999',
     });
   }
 
