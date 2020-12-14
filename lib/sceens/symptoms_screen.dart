@@ -124,6 +124,7 @@ class _SymptomScreenState extends State<SymptomScreen> {
                         }),
                   ],
                 ),
+                SizedBox(width: 10),
               ],
             ),
             SizedBox(height: 50),

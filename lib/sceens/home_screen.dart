@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'emails.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -60,10 +62,11 @@ class _HomeScreenState extends State<HomeScreen> {
             DrawerHeader(
                 child: Image.asset(
               'assets/user.png',
+              color: Colors.amber,
             )),
             ListTile(
-              leading: Icon(Icons.healing),
-              title: Text('Health Parameters'),
+              leading: Icon(Icons.healing_rounded),
+              title: Text('Personal Wellness'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SymptomScreen()));
@@ -80,13 +83,22 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 5),
             ListTile(
-              leading: Icon(Icons.local_hospital),
+              leading: Icon(Icons.local_hospital_outlined),
               title: Text('Treatment Centers'),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => TreatmentCentersScreen()));
+              },
+            ),
+            SizedBox(height: 5),
+            ListTile(
+              leading: Icon(Icons.email_outlined),
+              title: Text('Hotline '),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => EmailScreen()));
               },
             ),
             Spacer(),

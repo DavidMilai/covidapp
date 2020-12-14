@@ -3,6 +3,7 @@ import 'package:covidapp/services/auth.dart';
 import 'package:covidapp/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class SignUp extends StatefulWidget {
@@ -13,7 +14,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool isLoading = false;
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
-  String email, password, firstName, lastName;
+  String email, password, confirmPassword, firstName, lastName;
   var phoneNumber;
   final AuthService authentication = AuthService();
 
@@ -83,12 +84,12 @@ class _SignUpState extends State<SignUp> {
                       child: Icon(Icons.keyboard_backspace),
                     ),
                   ),
-                  SizedBox(height: size.height * 0.1),
+                  SizedBox(height: size.height * 0.08),
                   Center(
                     child: Text(
                       'Sign Up',
                       style:
-                          TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                   ),
                   SizedBox(height: size.height * 0.07),
@@ -122,7 +123,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(
                         prefixIcon: Icon(
@@ -136,7 +137,7 @@ class _SignUpState extends State<SignUp> {
                     validator: phoneValidator,
                     keyboardType: TextInputType.phone,
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(
                         prefixIcon: Icon(
@@ -150,7 +151,7 @@ class _SignUpState extends State<SignUp> {
                     validator: emailValidator,
                     keyboardType: TextInputType.emailAddress,
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock, size: 30),
@@ -161,7 +162,18 @@ class _SignUpState extends State<SignUp> {
                     },
                     obscureText: true,
                   ),
-                  SizedBox(height: 25),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock, size: 30),
+                        labelText: 'Confirm Password'),
+                    validator: pwdValidator,
+                    onChanged: (value) {
+                      confirmPassword = value;
+                    },
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 20),
                   MaterialButton(
                       color: Colors.amber,
                       minWidth: 250,
@@ -178,29 +190,40 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       onPressed: () async {
-                        if (loginFormKey.currentState.validate()) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          var test =
-                              await authentication.register(email, password);
-                          if (test == null) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                          } else {
-                            await DatabaseService(userEmail: email)
-                                .setUserData(
-                                    email, firstName, lastName, phoneNumber)
-                                .then((value) => Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            VerifyEmailScreen())));
+                        if (password == confirmPassword) {
+                          if (loginFormKey.currentState.validate()) {
                             setState(() {
                               isLoading = true;
                             });
+                            var test =
+                                await authentication.register(email, password);
+                            if (test == null) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            } else {
+                              await DatabaseService(userEmail: email)
+                                  .setUserData(
+                                      email, firstName, lastName, phoneNumber)
+                                  .then((value) => Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              VerifyEmailScreen())));
+                              setState(() {
+                                isLoading = true;
+                              });
+                            }
                           }
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "Passwords don\'t match",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.TOP,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
                         }
                       }),
                 ],

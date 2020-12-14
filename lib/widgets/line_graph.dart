@@ -58,8 +58,10 @@ class LineChartSample2 extends StatelessWidget {
                       return '5';
                     case 5:
                       return '6';
-                    default:
+                    case 6:
                       return '7';
+                    default:
+                      return '';
                   }
                 }),
             leftTitles: SideTitles(
