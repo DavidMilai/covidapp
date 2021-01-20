@@ -21,14 +21,6 @@ class DatabaseService {
     });
   }
 
-  Future setHospitals() async {
-    return await hospitals.doc().set({
-      "name": 'Mbagathi Infectious Diseases Hospital',
-      "longitude": '-1.3089683520723256',
-      "latitude": ' 36.80342399999999',
-    });
-  }
-
   Future setUserSymptoms(
       String temp, String day, String cough, bool smell) async {
     return await userCollection
